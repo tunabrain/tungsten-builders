@@ -1,7 +1,22 @@
 ROOTDIR=`pwd`
 BUILDER_ROOT=$ROOTDIR/builders
 BUILD_ROOT=$ROOTDIR/builds
-BUILDERS=`for i in builders/* ; do basename $i ; done`
+DO_VERIFY=true
+DO_BUILD=true
+BUILDERS=
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -v | --verify )         DO_BUILD=false;;
+        -b | --build )          DO_VERIFY=false;;
+        * )                     BUILDERS="$BUILDERS $1"
+    esac
+    shift
+done
+
+if [ ${#BUILDERS[@]} -eq 0 ]; then
+    BUILDERS=`for i in builders/* ; do basename $i ; done`
+fi
 
 mkdir -p $BUILD_ROOT
 
@@ -18,8 +33,8 @@ for BUILDER in $BUILDERS; do
     mkdir -p $BUILD_ROOT/$BUILDER/logs
     mkdir -p $BUILD_ROOT/$BUILDER/packages
     mkdir -p $BUILD_ROOT/$BUILDER/renders
-    docker run --privileged --rm -w "/home/tungsten" -v $TUNGSTEN_PATH:/tungsten:ro                -v $BUILDER_ROOT/$BUILDER/build/buildtools:/buildtools:ro  -v $BUILD_ROOT/$BUILDER/packages:/build-output -e VERSION=$VERSION tungsten-$BUILDER-build  &>$BUILD_ROOT/$BUILDER/logs/${VERSION}-build.log
-    docker run              --rm -w "/home/tungsten" -v $BUILD_ROOT/$BUILDER/packages:/packages:ro -v $BUILDER_ROOT/$BUILDER/verify/buildtools:/buildtools:ro -v $BUILD_ROOT/$BUILDER/renders:/verify-output -e VERSION=$VERSION tungsten-$BUILDER-verify &>$BUILD_ROOT/$BUILDER/logs/${VERSION}-verify.log
+    if $DO_BUILD;  then docker run --privileged --rm -w "/home/tungsten" -v $TUNGSTEN_PATH:/tungsten:ro                -v $BUILDER_ROOT/$BUILDER/build/buildtools:/buildtools:ro  -v $BUILD_ROOT/$BUILDER/packages:/build-output -e VERSION=$VERSION tungsten-$BUILDER-build  &>$BUILD_ROOT/$BUILDER/logs/${VERSION}-build.log  ; fi
+    if $DO_VERIFY; then docker run              --rm -w "/home/tungsten" -v $BUILD_ROOT/$BUILDER/packages:/packages:ro -v $BUILDER_ROOT/$BUILDER/verify/buildtools:/buildtools:ro -v $BUILD_ROOT/$BUILDER/renders:/verify-output -e VERSION=$VERSION tungsten-$BUILDER-verify &>$BUILD_ROOT/$BUILDER/logs/${VERSION}-verify.log ; fi
 done
 
 rm -rf $TUNGSTEN_PATH
