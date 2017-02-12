@@ -1,0 +1,10 @@
+FROM centos:centos7
+LABEL maintainer "benedikt.bitterli@gmail.com"
+RUN yum install -y make gcc gcc-c++ cmake OpenEXR-devel libjpeg-turbo-devel zlib-devel
+RUN yum install -y rpm-build
+RUN yum install -y mock
+RUN yum install -y nano
+RUN groupadd -g {GROUPID} tungsten
+RUN useradd -u {USERID} -g {GROUPID} --create-home --groups mock tungsten
+USER tungsten
+CMD /buildtools/build.sh

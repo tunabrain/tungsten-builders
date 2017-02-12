@@ -1,0 +1,8 @@
+FROM ubuntu:xenial
+LABEL maintainer "benedikt.bitterli@gmail.com"
+RUN apt-get update && apt-get install -y gcc g++ cmake qtbase5-dev qt5-qmake libqt5opengl5-dev libopenexr-dev libjpeg-dev libopenvdb-dev libtbb-dev libboost-dev build-essential devscripts dh-make
+RUN apt-get install -y git
+RUN groupadd -g {GROUPID} tungsten
+RUN useradd -u {USERID} -g {GROUPID} --create-home tungsten
+USER tungsten
+CMD /buildtools/build.sh

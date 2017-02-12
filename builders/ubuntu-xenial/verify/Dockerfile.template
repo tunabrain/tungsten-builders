@@ -1,0 +1,8 @@
+FROM ubuntu:xenial
+LABEL maintainer "benedikt.bitterli@gmail.com"
+RUN apt-get update && apt-get install -y sudo
+RUN groupadd -g {GROUPID} tungsten
+RUN useradd -u {USERID} -g {GROUPID} -G sudo --create-home tungsten
+RUN sed -i -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers
+USER tungsten
+CMD /buildtools/verify.sh

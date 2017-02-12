@@ -1,0 +1,8 @@
+FROM centos:centos7
+LABEL maintainer "benedikt.bitterli@gmail.com"
+RUN yum install -y sudo
+RUN groupadd -g {GROUPID} tungsten
+RUN useradd -u {USERID} -g {GROUPID} --create-home --groups wheel tungsten
+RUN sed -i -e 's/%wheel\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%wheel ALL=NOPASSWD:ALL/g' /etc/sudoers
+USER tungsten
+CMD /buildtools/verify.sh

@@ -1,0 +1,16 @@
+Source: tungsten
+Maintainer: Benedikt Bitterli <benedikt.bitterli@gmail.com>
+Section: graphics
+Priority: optional 
+Build-Depends: debhelper (>= 9), gcc (>=4.8.2), g++ (>=4.8.2), cmake (>=2.8.11), libopenexr-dev, qtbase5-dev, qt5-qmake, libqt5opengl5-dev, libopenvdb-dev, libtbb-dev, libboost-dev, libjpeg-dev
+Standards-Version: 3.9.7
+Homepage: https://tungsten-renderer.com/
+
+Package: tungsten
+Architecture: any
+Section: graphics
+Priority: optional
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Physically based renderer for computer graphics research.
+ A high performance physically based renderer for computer graphics research.
+Homepage: https://tungsten-renderer.com
