@@ -1,3 +1,4 @@
+set -eu
 mkdir -p rpmbuild/SOURCES
 cd rpmbuild
 tar --transform "s,^tungsten/,tungsten-${VERSION}/,g" -cvzf SOURCES/tungsten-$VERSION.tar.gz /tungsten --exclude-vcs
